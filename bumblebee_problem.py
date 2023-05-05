@@ -102,8 +102,12 @@ class UrbanPollinator(Benchmark):
                 6: 0.7,
                 7: 0.7
             }
-            f2 = (1-args["no_mow_pc"]) + 190/args["mowing_days"] + 190/args["pesticide_days"] + flower_area_type_points[args["flower_area_type"]]/2
-            f2 = f2/(1+190+190+1) # Normalization
+            f2 = (1 - args["no_mow_pc"]) * 2
+            f2 += 1 - ((args["mowing_days"]-1)/189)
+            f2 += 1 - ((args["pesticide_days"]-1)/189)
+            f2 += flower_area_type_points[args["flower_area_type"]] * 0.5
+
+            f2 = f2/(2+1+1+0.5) # Normalization
 
             fitness.append(f2)
         return fitness

@@ -120,7 +120,7 @@ def runModel(args, generation):
             )
     '''
     model = getModel(**args)
-    for i in range(7600):#38000):
+    for i in range(38000):
         model.step()
 
     col_ag_df = model.datacollector_colonies.get_agent_vars_dataframe()
