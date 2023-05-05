@@ -1,0 +1,7 @@
+logs
+.vscode
+__pycache__
+*.csv
+*.zip
+*.log
+.DS_Store
