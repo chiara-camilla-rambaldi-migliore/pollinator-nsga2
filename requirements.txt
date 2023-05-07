@@ -1,6 +1,6 @@
 arrow==1.2.3
 binaryornot==0.4.4
-bumblebee-pollination-abm @ git+https://github.com/chiara-camilla-rambaldi-migliore/bumblebee_pollination_abm@45e801bfd73b52e948632243e724e3316106ed64
+bumblebee-pollination-abm @ git+https://github.com/chiara-camilla-rambaldi-migliore/bumblebee_pollination_abm
 certifi==2022.12.7
 chardet==5.1.0
 charset-normalizer==3.1.0

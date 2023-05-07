@@ -44,22 +44,22 @@ class UrbanPollinator(Benchmark):
         
     def evaluator(self, candidates, args):
         generation = args.setdefault('generation', 0)
+        max_cores = args.setdefault('max_cores', 8)
         fitness = []
-        f1s = self.getFitness1(candidates, generation)
+        f1s = self.getFitness1(candidates, generation, max_cores)
         f2s = self.getFitness2(candidates)
         for i in range(len(candidates)):
             fitness.append(emo.Pareto([f1s[i], f2s[i]]))
 
         return fitness
     
-    def getFitness1(self, candidates, generation):
+    def getFitness1(self, candidates, generation, max_cores=8):
         fitness = []
 
         # Multiprocessing
         proc_res = []
-        MAX_CORES = 8
 
-        with futures.ProcessPoolExecutor(max_workers=MAX_CORES) as executor:
+        with futures.ProcessPoolExecutor(max_workers=max_cores) as executor:
             for c in candidates:
                 args = {
                     "no_mow_pc": c[0],

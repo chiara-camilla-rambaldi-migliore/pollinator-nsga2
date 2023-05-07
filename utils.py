@@ -37,6 +37,7 @@ def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type):
             PlantType.AUTUMN_TYPE3: (0.4, 0.55)
         },
         "woods_drawing": False,
+        "data_collection": False,
         "flower_area_type": flower_area_type,
         "bumblebee_params": {
             "max_memory": 10,
@@ -97,11 +98,6 @@ def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type):
 
     return GreenArea(**model_params)
 
-
-def startModel(model):
-    for i in range(7600):#38000):
-        model.step()
-
 def runModel(args, generation):
     '''
     args:
@@ -119,48 +115,36 @@ def runModel(args, generation):
                 7: flower area in the east section
             )
     '''
+
     model = getModel(**args)
-    for i in range(38000):
+    # 7600 steps per year
+    for i in range(22800): # 3 years
         model.step()
 
+    if model.data_collection:
+        saveData(model, generation)
+
+    return model.getHibernatedQueensQuantity()
+
+def saveData(model, generation):
     col_ag_df = model.datacollector_colonies.get_agent_vars_dataframe()
-    col_mod_df = model.datacollector_colonies.get_model_vars_dataframe()
-    bumb_ag_df = model.datacollector_bumblebees.get_agent_vars_dataframe()
     bumb_mod_df = model.datacollector_bumblebees.get_model_vars_dataframe()
-    pla_ag_df = model.datacollector_plants.get_agent_vars_dataframe()
     pla_mod_df = model.datacollector_plants.get_model_vars_dataframe()
     col_ag_df.to_csv(
         f'col_ag_df_gen_{generation}.zip', 
         index=False, 
         compression={"method":'zip', "archive_name":f'col_ag_df_gen_{generation}.csv'}
     )
-    col_mod_df.to_csv(
-        f'col_mod_df_gen_{generation}.zip',
-        index=False,
-        compression={"method":'zip', "archive_name":f'col_mod_df_gen_{generation}.csv'}
-    )
-    bumb_ag_df.to_csv(
-        f'bumb_ag_df_gen_{generation}.zip',
-        index=False,
-        compression={"method":'zip', "archive_name":f'bumb_ag_df_gen_{generation}.csv'}
-    )
     bumb_mod_df.to_csv(
         f'bumb_mod_df_gen_{generation}.zip',
         index=False,
         compression={"method":'zip', "archive_name":f'bumb_mod_df_gen_{generation}.csv'}
-    )
-    pla_ag_df.to_csv(
-        f'pla_ag_df_gen_{generation}.zip',
-        index=False,
-        compression={"method":'zip', "archive_name":f'pla_ag_df_gen_{generation}.csv'}
     )
     pla_mod_df.to_csv(
         f'pla_mod_df_gen_{generation}.zip',
         index=False,
         compression={"method":'zip', "archive_name":f'pla_mod_df_gen_{generation}.csv'}
     )
-
-    return model.getHibernatedQueensQuantity()
 
 def grayToDecimal(n: List[int]) -> int:
 	n = ''.join(str(i) for i in n)

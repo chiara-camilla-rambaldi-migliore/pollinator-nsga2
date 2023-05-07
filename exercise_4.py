@@ -24,13 +24,13 @@ Edit this part to do the exercises
 
 """
 
-display = True# Plot initial and final populations
+display = False# Plot initial and final populations
 num_vars = 20 
 
 # parameters for NSGA-2
 args = {}
-args["pop_size"] = 1
-args["max_generations"] = 0
+args["pop_size"] = 10
+args["max_generations"] = 30
 
 problem = UrbanPollinator()
 
@@ -49,6 +49,8 @@ args["variations_args"] = [
     {"bf_points": [9,10,11,12,13,14,15,16]},
     {"bf_points": [17,18,19]},
 ]
+
+args["max_cores"] = 8
     
 if __name__ == "__main__" :
     if len(sys.argv) > 1 :
