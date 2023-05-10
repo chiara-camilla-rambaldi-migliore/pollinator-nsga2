@@ -2,6 +2,7 @@ from pylab import *
 
 from inspyred.ec.emo import Pareto
 from numpy.random import RandomState
+import pandas as pd
 
 import functools
 
@@ -31,11 +32,15 @@ class NumpyRandomWrapper(RandomState):
     
 def initial_pop_observer(population, num_generations, num_evaluations, 
                          args):
-    if num_generations == 0 :
-        args["initial_pop_storage"]["individuals"] = asarray([guy.candidate 
-                                                 for guy in population]) 
-        args["initial_pop_storage"]["fitnesses"] = asarray([guy.fitness 
-                                          for guy in population]) 
+    temp = {}
+    temp["individuals"] = asarray([guy.candidate for guy in population]) 
+    temp["fitnesses"] = asarray([guy.fitness for guy in population])
+
+    args["initial_pop_storage"].append(temp)
+
+    df = pd.DataFrame(args["initial_pop_storage"], columns=['individuals', 'fitnesses'])
+    df.to_csv('population.csv', index=False)
+    
         
 def generator(random, args):
     return asarray([random.uniform(args["pop_init_range"][0],

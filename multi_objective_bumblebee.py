@@ -13,7 +13,7 @@ def run_nsga2(random, problem, display=False, num_vars=0, use_bounder=True,
     """ run NSGA2 on the given problem """
     
     #create dictionaries to store data about initial population, and lines
-    initial_pop_storage = {}
+    initial_pop_storage = []
  
     algorithm = CustomNSGA2(random)
     algorithm.terminator = terminators.generation_termination 
