@@ -1,6 +1,7 @@
 from utils import grayToDecimal, grayCode
 import copy
 from typing import List
+from math import floor
 
 class Bounder(object):
     """Defines a basic bounding function for numeric lists.
@@ -76,6 +77,9 @@ class Bounder(object):
                     bounded_dec = max(min(dec, self.bounds_list[i][1]), self.bounds_list[i][0])
                     bounded_binary = bin(bounded_dec)[2:]
                     bounded_candidate[alleles[0]:alleles[1]] = list(map(int, bounded_binary))
+                elif self.allele_types[i] == 'value_coded_discrete':
+                    candidate[alleles] = floor(candidate[alleles])
+                    bounded_candidate[alleles] = max(min(candidate[alleles], self.bounds_list[i][1]), self.bounds_list[i][0])
 
             return bounded_candidate
         
