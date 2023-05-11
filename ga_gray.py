@@ -10,7 +10,7 @@ import sys
 import collections
 collections.Iterable = collections.abc.Iterable
 collections.Sequence = collections.abc.Sequence
-from bumblebee_problem import UrbanPollinator
+from bumblebee_problem_gray import UrbanPollinator
 from multi_objective_bumblebee import run_nsga2
 import logging
 import time
