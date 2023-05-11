@@ -13,8 +13,6 @@ collections.Sequence = collections.abc.Sequence
 from bumblebee_problem_gray import UrbanPollinator
 from multi_objective_bumblebee import run_nsga2
 import logging
-import time
-import os
 import pandas as pd
 from inspyred.ec import variators
 from custom_variators import single_point_crossover, bit_flip_mutation, gaussian_mutation
@@ -99,7 +97,6 @@ if __name__ == "__main__" :
 
     df = pd.DataFrame(new_final_pop, columns=['no_mow_pc', 'mowing_days', 'pesticide_days', 'flower_area_type', 'fitness_1', 'fitness_2'])
     df.to_csv('final_pop.csv', index=False)
-    print(df)
     
     ioff()
     show()
