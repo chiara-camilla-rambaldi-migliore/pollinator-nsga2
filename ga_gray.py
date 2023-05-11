@@ -16,6 +16,8 @@ import logging
 import time
 import os
 import pandas as pd
+from inspyred.ec import variators
+from custom_variators import single_point_crossover, bit_flip_mutation, gaussian_mutation
 from utils import grayToDecimal
     
 """ 
@@ -68,9 +70,18 @@ if __name__ == "__main__" :
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    final_pop, final_pop_fitnesses = run_nsga2(rng, problem,
-                                        display=display, num_vars=num_vars,
-                                        **args)
+    variator = [
+        variators.blend_crossover, # for no mow percentual
+        single_point_crossover, # for mowing days
+        single_point_crossover, # for pesticide days
+        single_point_crossover, # for flower area type
+        gaussian_mutation, # for real values
+        bit_flip_mutation, # for binary values
+        bit_flip_mutation, # for binary values
+        bit_flip_mutation # for binary values
+    ]
+
+    final_pop, final_pop_fitnesses = run_nsga2(rng, problem, variator, display=display, num_vars=num_vars, **args)
     new_final_pop = []
     for i, guy in enumerate(final_pop):
         new_guy = []

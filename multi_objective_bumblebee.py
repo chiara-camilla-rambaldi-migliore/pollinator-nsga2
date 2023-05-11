@@ -8,8 +8,7 @@ from custom_nsga2 import CustomNSGA2
 import inspyred_utils
 import plot_utils
 
-def run_nsga2(random, problem, display=False, num_vars=0, use_bounder=True,
-        variator=None, **kwargs) :
+def run_nsga2(random, problem, variator, display=False, num_vars=0, use_bounder=True, **kwargs) :
     """ run NSGA2 on the given problem """
     
     #create dictionaries to store data about initial population, and lines
@@ -17,19 +16,7 @@ def run_nsga2(random, problem, display=False, num_vars=0, use_bounder=True,
  
     algorithm = CustomNSGA2(random)
     algorithm.terminator = terminators.generation_termination 
-    if variator is None :     
-        algorithm.variator = [
-            variators.blend_crossover, # for no mow percentual
-            single_point_crossover, # for mowing days
-            single_point_crossover, # for pesticide days
-            single_point_crossover, # for flower area type
-            gaussian_mutation, # for real values
-            bit_flip_mutation, # for binary values
-            bit_flip_mutation, # for binary values
-            bit_flip_mutation # for binary values
-        ]
-    else :
-        algorithm.variator = variator
+    algorithm.variator = variator
     
     kwargs["num_selected"]=kwargs["pop_size"]  
     if use_bounder :
@@ -47,10 +34,6 @@ def run_nsga2(random, problem, display=False, num_vars=0, use_bounder=True,
                           generator=problem.generator,
                           **kwargs) #kwargs will take also args for variators      
     
-    best_guy = final_pop[0].candidate[0:num_vars]
-    best_fitness = final_pop[0].fitness
-    #final_pop_fitnesses = asarray([guy.fitness for guy in algorithm.archive])
-    #final_pop_candidates = asarray([guy.candidate[0:num_vars] for guy in algorithm.archive])
     final_pop_fitnesses = asarray([guy.fitness for guy in final_pop])
     final_pop_candidates = list([guy.candidate[0:num_vars] for guy in final_pop])
 
