@@ -44,17 +44,19 @@ args["variations_args"] = [
     {"spx_points": [1, 2, 3, 4, 5, 6, 7, 8]},
     {"spx_points": [9,10,11,12,13,14,15,16]},
     {"spx_points": [17,18,19]},
-    {"g_points": [0]},
+    {"g_points": [0], "gaussian_stdev": 0.1}, # 95% of gaussian values are in the range [-0.2, 0.2]
     {"bf_points": [1, 2, 3, 4, 5, 6, 7, 8]},
     {"bf_points": [9,10,11,12,13,14,15,16]},
     {"bf_points": [17,18,19]},
 ]
 
 args["max_cores"] = 8
+args["seed"] = 23
     
 if __name__ == "__main__" :
     if len(sys.argv) > 1 :
         rng = NumpyRandomWrapper(int(sys.argv[1]))
+        args["seed"] = int(sys.argv[1])
     else :
         rng = NumpyRandomWrapper()
 

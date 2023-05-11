@@ -2,7 +2,7 @@ from typing import List
 from bumblebee_pollination_abm.Model import GreenArea
 from bumblebee_pollination_abm.Utils import PlantType, BeeType, BeeStage
 
-def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type):
+def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type, seed):
     size = (50, 50)
 
     model_params = {
@@ -93,7 +93,8 @@ def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type):
             "nectar_consumption_per_bee": 0.7,
             "pollen_consumption_per_bee": 0.7,
             "days_till_death": 4
-        }
+        },
+        "seed": seed
     }
 
     return GreenArea(**model_params)

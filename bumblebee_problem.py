@@ -44,16 +44,17 @@ class UrbanPollinator(Benchmark):
         
     def evaluator(self, candidates, args):
         generation = args.setdefault('generation', 0)
+        seed = args.setdefault('seed', 23)
         max_cores = args.setdefault('max_cores', 8)
         fitness = []
-        f1s = self.getFitness1(candidates, generation, max_cores)
+        f1s = self.getFitness1(candidates, generation, seed, max_cores)
         f2s = self.getFitness2(candidates)
         for i in range(len(candidates)):
             fitness.append(emo.Pareto([f1s[i], f2s[i]]))
 
         return fitness
     
-    def getFitness1(self, candidates, generation, max_cores=8):
+    def getFitness1(self, candidates, generation, seed, max_cores=8):
         fitness = []
 
         # Multiprocessing
@@ -66,6 +67,7 @@ class UrbanPollinator(Benchmark):
                     "mowing_days": grayToDecimal(c[1:9]),
                     "pesticide_days": grayToDecimal(c[9:17]),
                     "flower_area_type": grayToDecimal(c[17:20]),
+                    "seed": seed
                 }
                 proc_res.append(
                     executor.submit(
@@ -103,7 +105,7 @@ class UrbanPollinator(Benchmark):
                 7: 0.7
             }
             f2 = (1 - args["no_mow_pc"]) * 2
-            f2 += 1 - ((args["mowing_days"]-1)/189)
+            f2 += 1 - ((args["mowing_days"]-1)/189) #deve avere più peso tra tutte
             f2 += 1 - ((args["pesticide_days"]-1)/189)
             f2 += flower_area_type_points[args["flower_area_type"]] * 0.5
 
