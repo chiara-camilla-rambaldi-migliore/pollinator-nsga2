@@ -35,7 +35,7 @@ def run_nsga2(random, problem, variator, display=False, num_vars=0, use_bounder=
                           **kwargs) #kwargs will take also args for variators      
     
     final_pop_fitnesses = asarray([guy.fitness for guy in final_pop])
-    final_pop_candidates = list([guy.candidate[0:num_vars] for guy in final_pop])
+    final_pop_candidates = [guy.candidate[0:num_vars] for guy in final_pop]
 
     if display :
         # Plot the parent and the offspring on the fitness landscape 

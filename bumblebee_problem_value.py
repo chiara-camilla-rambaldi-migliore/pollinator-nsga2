@@ -30,7 +30,7 @@ class UrbanPollinator(Benchmark):
             [[0,1], [1,190], [1,190], [1,7]], 
             ['value_coded', 'value_coded_discrete', 'value_coded_discrete', 'value_coded_discrete']
         )
-        self.maximize = False
+        self.maximize = True
 
     def generator(self, random, args):
         new_candidate = []

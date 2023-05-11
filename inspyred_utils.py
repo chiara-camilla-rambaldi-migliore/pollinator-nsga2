@@ -33,8 +33,8 @@ class NumpyRandomWrapper(RandomState):
 def initial_pop_observer(population, num_generations, num_evaluations, 
                          args):
     temp = {}
-    temp["individuals"] = asarray([guy.candidate for guy in population]) 
-    temp["fitnesses"] = asarray([guy.fitness for guy in population])
+    temp["individuals"] = [guy.candidate for guy in population]
+    temp["fitnesses"] = [guy.fitness for guy in population]
 
     args["initial_pop_storage"].append(temp)
 
