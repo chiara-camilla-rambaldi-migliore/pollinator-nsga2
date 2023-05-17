@@ -1,5 +1,5 @@
 from inspyred.benchmarks import Benchmark
-from utils import grayCode, grayToDecimal, runModel
+from utils import grayCode, grayToDecimal, runModel, getLiveability
 from custom_bounder import Bounder
 from inspyred.ec import emo
 import math
@@ -89,27 +89,12 @@ class UrbanPollinator(Benchmark):
     def getFitness2(self, candidates):
         fitness = []
         for c in candidates:
-            args = {
-                "no_mow_pc": c[0],
-                "mowing_days": grayToDecimal(c[1:9]),
-                "pesticide_days": grayToDecimal(c[9:17]),
-                "flower_area_type": grayToDecimal(c[17:20]),
-            }
-            flower_area_type_points = {
-                1: 1,
-                2: 1,
-                3: 0.5,
-                4: 0.7,
-                5: 0.7,
-                6: 0.7,
-                7: 0.7
-            }
-            f2 = (1 - args["no_mow_pc"]) * 2
-            f2 += 1 - ((args["mowing_days"]-1)/189) #deve avere più peso tra tutte
-            f2 += 1 - ((args["pesticide_days"]-1)/189)
-            f2 += flower_area_type_points[args["flower_area_type"]] * 0.5
-
-            f2 = f2/(2+1+1+0.5) # Normalization
+            x1 = c[0] #no_mow_pc
+            x2 = grayToDecimal(c[1:9]) - 1 #mowing_days
+            x3 = grayToDecimal(c[9:17]) - 1 #pesticide_days
+            x4 = grayToDecimal(c[17:20]) - 1 #flower_area_type
+            
+            f2 = getLiveability(x1, x2, x3, x4)
 
             fitness.append(f2)
         return fitness

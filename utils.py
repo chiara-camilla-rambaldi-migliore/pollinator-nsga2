@@ -1,6 +1,8 @@
 from typing import List
+import numpy as np
 from bumblebee_pollination_abm.Model import GreenArea
 from bumblebee_pollination_abm.Utils import PlantType, BeeType, BeeStage
+from math import tanh
 
 def getModel(no_mow_pc, mowing_days, pesticide_days, flower_area_type, seed):
     size = (50, 50)
@@ -165,3 +167,50 @@ def grayCode(n: int, bits: int) -> List[int]:
     gray_list = list(map(int, gray))
     gray_list = [0] * (bits - len(gray_list)) + gray_list
     return gray_list
+
+def lhs_generator(random, args):
+    lower_bounds = args["min"]
+    upper_bounds = args["max"]
+    points = []
+    n = args["dim"]
+    m = args["size"]
+    for i in range(n):
+        interval = (upper_bounds[i]-lower_bounds[i])/m
+        lower_limits = np.arange(start=lower_bounds[i], stop=upper_bounds[i], step=interval)
+        upper_limits = np.arange(start=(lower_bounds[i]+interval), stop=(upper_bounds[i]+interval), step=interval)
+        p = random.uniform(low = lower_limits, high = upper_limits, size = m)
+        random.shuffle(p)
+        points.append(list(p))
+    if(args["dim"]==1):
+      points = points[0]
+    return np.array(points)
+
+def getLiveability(x1,x2,x3,x4):
+    flower_area_type_points = { # 0 is the best, 1 is the worst
+        0: 0.1, #centered square
+        1: 0.1, #centered circle
+        2: 0.4, #north and south
+        3: 0.2, #north
+        4: 0.2, #south
+        5: 0.2, #west
+        6: 0.2 #east
+    }
+    alpha1 = 0.8
+    alpha2 = 0.2
+    beta1 = 1.5
+    beta2 = 25
+    kappa1 = 0.75
+    kappa2 = 0.25
+    s1 = x1
+    s2 = flower_area_type_points[x4]
+    g = 1 if (s1 ==1 or s2 == 1) else kappa1*s1 + kappa2*s2
+    t2 = 60/(1+g)
+    t3 = 60
+    m2 = 189
+    m3 = 189
+    gamma1 = 0.1 * (1 - g) * (m2/(t2*g)) if g != 0 else 0
+    gamma2 = 5
+    w = (beta1*x3)/m3 if x3 <= t3 else (beta1*t3)/m3 + tanh((x3-t3)*beta2/m3)*((m3 - beta1*t3)/m3)
+    e = (gamma1*g*x2)/m2 + g if x2 <= t2 else g + (gamma1*g*t2)/m2 + tanh((x2-t2)*gamma2/m2)*(((m2 - gamma1*g*t2)/m2) - g)
+    f2 = 1 - (alpha1*e + alpha2*w)
+    return f2

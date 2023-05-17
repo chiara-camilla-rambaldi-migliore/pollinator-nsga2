@@ -10,14 +10,14 @@ import sys
 import collections
 collections.Iterable = collections.abc.Iterable
 collections.Sequence = collections.abc.Sequence
-from bumblebee_problem_gray import UrbanPollinator
+from bumblebee_problem_gray_doe import UrbanPollinator
 from multi_objective_bumblebee import run_nsga2
 import logging
 import pandas as pd
 from inspyred.ec import variators
 from custom_variators import single_point_crossover, bit_flip_mutation, gaussian_mutation
 from utils import grayToDecimal
-from custom_nsga2 import CustomNSGA2
+from custom_nsga2 import CustomDoeNSGA2
 from inspyred_utils import initial_pop_observer_gray
     
 """ 
@@ -52,8 +52,7 @@ args["variations_args"] = [
     {"bf_points": [17,18,19]},
 ]
 
-args["fileName_initial_pop"] = 'pop_gray.csv'
-    
+args["fileName_initial_pop"] = 'pop_gray_doe.csv'
     
 if __name__ == "__main__" :
     if len(sys.argv) > 1 :
@@ -80,8 +79,7 @@ if __name__ == "__main__" :
         bit_flip_mutation, # for binary values
         bit_flip_mutation # for binary values
     ]
-
-    algorithm = CustomNSGA2(rng)
+    algorithm = CustomDoeNSGA2(rng)
 
     if display and problem.objectives == 2:
         algorithm.observer = [initial_pop_observer_gray]

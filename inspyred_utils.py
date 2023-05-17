@@ -3,6 +3,7 @@ from pylab import *
 from inspyred.ec.emo import Pareto
 from numpy.random import RandomState
 import pandas as pd
+from utils import grayToDecimal
 
 import functools
 
@@ -30,16 +31,35 @@ class NumpyRandomWrapper(RandomState):
     def gauss(self, mu, sigma):
         return self.normal(mu, sigma)
     
-def initial_pop_observer(population, num_generations, num_evaluations, 
+def initial_pop_observer_gray(population, num_generations, num_evaluations, 
                          args):
-    temp = {}
-    temp["individuals"] = [guy.candidate for guy in population]
-    temp["fitnesses"] = [guy.fitness for guy in population]
+    for guy in population:
+        new_guy = []
+        new_guy.append(round(guy.candidate[0], 3))
+        new_guy.append(grayToDecimal(guy.candidate[1:9]))
+        new_guy.append(grayToDecimal(guy.candidate[9:17]))
+        new_guy.append(grayToDecimal(guy.candidate[17:]))
+        new_guy.append(guy.fitness[0])
+        new_guy.append(round(guy.fitness[1], 3))
+        args["initial_pop_storage"].append(new_guy)
 
-    args["initial_pop_storage"].append(temp)
+    df = pd.DataFrame(args["initial_pop_storage"], columns=['no_mow_pc', 'mowing_days', 'pesticide_days', 'flower_area_type', 'fitness_1', 'fitness_2'])
+    df.to_csv(args["fileName_initial_pop"], index=False)
 
-    df = pd.DataFrame(args["initial_pop_storage"], columns=['individuals', 'fitnesses'])
-    df.to_csv('population.csv', index=False)
+def initial_pop_observer_value(population, num_generations, num_evaluations, 
+                         args):
+    for guy in population:
+        new_guy = []
+        new_guy.append(round(guy.candidate[0], 3))
+        new_guy.append(guy.candidate[1])
+        new_guy.append(guy.candidate[2])
+        new_guy.append(guy.candidate[3])
+        new_guy.append(guy.fitness[0])
+        new_guy.append(round(guy.fitness[1], 3))
+        args["initial_pop_storage"].append(new_guy)
+
+    df = pd.DataFrame(args["initial_pop_storage"], columns=['no_mow_pc', 'mowing_days', 'pesticide_days', 'flower_area_type', 'fitness_1', 'fitness_2'])
+    df.to_csv(args["fileName_initial_pop"], index=False)
     
         
 def generator(random, args):

@@ -8,24 +8,18 @@ from custom_nsga2 import CustomNSGA2
 import inspyred_utils
 import plot_utils
 
-def run_nsga2(random, problem, variator, display=False, num_vars=0, use_bounder=True, **kwargs) :
+def run_nsga2(random, problem, variator, algorithm, display=False, num_vars=0, use_bounder=True, **kwargs) :
     """ run NSGA2 on the given problem """
     
     #create dictionaries to store data about initial population, and lines
     initial_pop_storage = []
  
-    algorithm = CustomNSGA2(random)
     algorithm.terminator = terminators.generation_termination 
     algorithm.variator = variator
     
     kwargs["num_selected"]=kwargs["pop_size"]  
     if use_bounder :
         kwargs["bounder"]=problem.bounder
-    
-    if display and problem.objectives == 2:
-        algorithm.observer = [inspyred_utils.initial_pop_observer]
-    else :
-        algorithm.observer = inspyred_utils.initial_pop_observer
         
     final_pop = algorithm.evolve(evaluator=problem.evaluator,  
                           maximize=problem.maximize,

@@ -16,6 +16,8 @@ import logging
 import pandas as pd
 from inspyred.ec import variators
 from custom_variators import gaussian_mutation
+from custom_nsga2 import CustomNSGA2
+from inspyred_utils import initial_pop_observer_value
     
 """ 
 -------------------------------------------------------------------------
@@ -43,6 +45,8 @@ args["variations_args"] = [
     {"g_points": [0], "gaussian_stdev": 0.1}, #95% of gaussian values are in the range [-0.2, 0.2]
     {"g_points": [1, 2, 3], "gaussian_stdev": 10}, #95% of gaussian values are in the range [-20, 20]
 ]
+
+args["fileName_initial_pop"] = 'pop_value.csv'
     
 if __name__ == "__main__" :
     if len(sys.argv) > 1 :
@@ -64,7 +68,13 @@ if __name__ == "__main__" :
         gaussian_mutation, # for integer values
     ]
 
-    final_pop, final_pop_fitnesses = run_nsga2(rng, problem, variator, display=display, num_vars=num_vars, **args)
+    algorithm = CustomNSGA2(rng)
+    if display and problem.objectives == 2:
+        algorithm.observer = [initial_pop_observer_value]
+    else :
+        algorithm.observer = initial_pop_observer_value
+
+    final_pop, final_pop_fitnesses = run_nsga2(rng, problem, variator, algorithm, display=display, num_vars=num_vars, **args)
     new_final_pop = []
     for i, guy in enumerate(final_pop):
         new_guy = guy

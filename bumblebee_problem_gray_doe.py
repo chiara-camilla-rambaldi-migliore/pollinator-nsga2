@@ -1,9 +1,9 @@
 from inspyred.benchmarks import Benchmark
-from utils import runModel
+from utils import grayCode, grayToDecimal, runModel, lhs_generator, getLiveability
 from custom_bounder import Bounder
 from inspyred.ec import emo
+import math
 import concurrent.futures as futures
-from utils import getLiveability
 
 class UrbanPollinator(Benchmark):
     """
@@ -27,20 +27,24 @@ class UrbanPollinator(Benchmark):
     def __init__(self):
         Benchmark.__init__(self, 4, 2)
         self.bounder = Bounder(
-            [0, 1, 2, 3], 
+            [0, [1,9], [9,17], [17,20]], 
             [[0,1], [1,190], [1,190], [1,7]], 
-            ['value_coded', 'value_coded_discrete', 'value_coded_discrete', 'value_coded_discrete']
+            ['value_coded', 'gray_code', 'gray_code', 'gray_code']
         )
         self.maximize = True
 
-    def generator(self, random, args):
-        new_candidate = []
-        new_candidate.append(random.uniform(0, 1))
-        new_candidate.append(random.randint(1, 190))
-        new_candidate.append(random.randint(1, 190))
-        new_candidate.append(random.randint(1, 7))
-        
-        return new_candidate
+    def generator(self, random, qty, args):
+        gen_args = {'size': qty, 'dim': self.dimensions, 'min' : [0,1,1,1], 'max': [1, 190, 190, 7]}
+        seq = lhs_generator(random, gen_args)
+        seq = [
+            [seq[0][i]]+
+            grayCode(round(seq[1][i]), 8) +
+            grayCode(round(seq[2][i]), 8) +
+            grayCode(round(seq[3][i]), 3)
+            for i in range(qty)
+        ]
+
+        return seq
         
     def evaluator(self, candidates, args):
         generation = args.setdefault('generation', 0)
@@ -64,9 +68,9 @@ class UrbanPollinator(Benchmark):
             for c in candidates:
                 args = {
                     "no_mow_pc": c[0],
-                    "mowing_days": c[1],
-                    "pesticide_days": c[2],
-                    "flower_area_type": c[3],
+                    "mowing_days": grayToDecimal(c[1:9]),
+                    "pesticide_days": grayToDecimal(c[9:17]),
+                    "flower_area_type": grayToDecimal(c[17:20]),
                     "seed": seed
                 }
                 proc_res.append(
@@ -82,7 +86,7 @@ class UrbanPollinator(Benchmark):
                 print(f"Process {i} terminated correctly")
             except Exception as ex:
                 print(f"Error in process {i}: [{ex}]")
-
+                fitness.append(0)
             
         return fitness
     
@@ -90,9 +94,9 @@ class UrbanPollinator(Benchmark):
         fitness = []
         for c in candidates:
             x1 = c[0] #no_mow_pc
-            x2 = c[1] - 1 #mowing_days
-            x3 = c[2] - 1 #pesticide_days
-            x4 = c[3] - 1 #flower_area_type
+            x2 = grayToDecimal(c[1:9]) - 1 #mowing_days
+            x3 = grayToDecimal(c[9:17]) - 1 #pesticide_days
+            x4 = grayToDecimal(c[17:20]) - 1 #flower_area_type
             
             f2 = getLiveability(x1, x2, x3, x4)
 
