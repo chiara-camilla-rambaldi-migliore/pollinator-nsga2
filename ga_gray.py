@@ -67,7 +67,7 @@ if __name__ == "__main__" :
 
     logger = logging.getLogger('inspyred.ec')
     logger.setLevel(logging.DEBUG)
-    file_handler = logging.FileHandler('inspyred.log', mode='w')
+    file_handler = logging.FileHandler('inspyred_gray.log', mode='w')
     file_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
