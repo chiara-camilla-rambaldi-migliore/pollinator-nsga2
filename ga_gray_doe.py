@@ -52,6 +52,9 @@ args["variations_args"] = [
     {"bf_points": [17,18,19]},
 ]
 
+args["max_cores"] = 10
+args["seed"] = 23
+
 args["fileName_initial_pop"] = 'pop_gray_doe.csv'
     
 if __name__ == "__main__" :

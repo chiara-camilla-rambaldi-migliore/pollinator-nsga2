@@ -46,6 +46,9 @@ args["variations_args"] = [
     {"g_points": [1, 2, 3], "gaussian_stdev": 10}, #95% of gaussian values are in the range [-20, 20]
 ]
 
+args["max_cores"] = 10
+args["seed"] = 23
+
 args["fileName_initial_pop"] = 'pop_value_doe.csv'
     
 if __name__ == "__main__" :
