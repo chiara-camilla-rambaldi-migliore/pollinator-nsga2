@@ -87,7 +87,7 @@ if __name__ == "__main__" :
     print("Final Population Fitnesses\n", final_pop_fitnesses)
     
     df = pd.DataFrame(new_final_pop, columns=['no_mow_pc', 'mowing_days', 'pesticide_days', 'flower_area_type', 'fitness_1', 'fitness_2'])
-    df.to_csv('final_pop.csv', index=False)
+    df.to_csv('final_pop_value.csv', index=False)
     
     ioff()
     show()
