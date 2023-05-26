@@ -77,7 +77,7 @@ if __name__ == "__main__" :
     else :
         algorithm.observer = initial_pop_observer_value
 
-    final_pop, final_pop_fitnesses = run_nsga2(rng, problem, variator, algorithm, display=display, num_vars=num_vars, **args)
+    final_pop, final_pop_fitnesses = run_nsga2(problem, variator, algorithm, num_vars=num_vars, **args)
     new_final_pop = []
     for i, guy in enumerate(final_pop):
         new_guy = guy
